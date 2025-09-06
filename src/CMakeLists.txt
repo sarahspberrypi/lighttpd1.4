@@ -872,13 +872,10 @@ endif()
 
 if(BUILD_STATIC)
   set(BUILTIN_MODS ${BUILTIN_MODS}
-    mod_accesslog.c
     mod_ajp13.c
-    mod_auth.c mod_auth_api.c
+    mod_auth.c 
     mod_authn_file.c
     mod_cgi.c
-    mod_deflate.c
-    mod_dirlisting.c
     mod_extforward.c
     mod_proxy.c
     mod_rrdtool.c
@@ -886,8 +883,7 @@ if(BUILD_STATIC)
     mod_ssi.c
     mod_status.c
     mod_userdir.c
-    mod_vhostdb.c mod_vhostdb_api.c
-    mod_webdav.c
+    mod_vhostdb.c 
     mod_wstunnel.c
   )
 endif()

@@ -768,6 +768,10 @@ ssize_t fdevent_socket_read_discard (int fd, char *buf, size_t sz, int family, i
     return read(fd, buf, sz);
 }
 
+#ifdef __hermit__
+  #define FIONREAD 1 // this gets overwritten by newlib anyway
+#endif
+
 
 #include <sys/ioctl.h>
 #ifdef HAVE_SYS_FILIO_H

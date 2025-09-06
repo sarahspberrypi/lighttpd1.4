@@ -19,9 +19,14 @@ typedef int sig_atomic_t;
 #include <setjmp.h>     /* sigjmp_buf sigsetjmp() siglongjmp() */
 #include "ck.h"
 
+#ifdef __hermit__
+  # undef HAVE_SIGACTION // Hermit doesn't support Signals
+#endif
+
+
 /*(note: would need to be thread-local to be thread-safe)*/
 static volatile sig_atomic_t sys_setjmp_sigbus_jmp_valid;
-#ifdef _WIN32
+#if defined _WIN32 || defined __hermit__
 static jmp_buf sys_setjmp_sigbus_jmp_buf;
 #else
 static sigjmp_buf sys_setjmp_sigbus_jmp_buf;
@@ -31,7 +36,7 @@ __attribute_noreturn__
 void sys_setjmp_sigbus (int sig)
 {
     UNUSED(sig);
-  #ifdef _WIN32
+  #if defined _WIN32 || defined __hermit__
     if (sys_setjmp_sigbus_jmp_valid) longjmp(sys_setjmp_sigbus_jmp_buf, 1);
   #else
     if (sys_setjmp_sigbus_jmp_valid) siglongjmp(sys_setjmp_sigbus_jmp_buf, 1);
@@ -54,7 +59,7 @@ void sys_setjmp_sigbus (int sig)
 /* Note: sigaction() config in server.c sets SA_NODEFER and empty signal mask
  * so we avoid saving and restoring signal mask on systems with sigaction() */
 
-#ifdef _WIN32
+#if defined _WIN32 || defined __hermit__
 #define if_SYS_SETJMP_TRY()     if ((sys_setjmp_sigbus_jmp_valid = \
                                       !setjmp(sys_setjmp_sigbus_jmp_buf))) {
 #elif defined(HAVE_SIGACTION)

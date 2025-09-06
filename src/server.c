@@ -25,6 +25,10 @@
 # define REPO_VERSION ""
 #endif
 
+#ifdef __hermit__
+# undef HAVE_SIGACTION // Hermit doesn't support signals
+#endif
+
 #define PACKAGE_DESC PACKAGE_NAME "/" PACKAGE_VERSION REPO_VERSION
 static const buffer default_server_tag =
   { PACKAGE_DESC "\0server", sizeof(PACKAGE_DESC), 0 };
@@ -115,6 +119,10 @@ int getopt (int argc, char * const argv[], const char *optstring)
 
 #ifdef HAVE_VALGRIND_VALGRIND_H
 # include <valgrind/valgrind.h>
+#endif
+
+#ifdef __hermit__
+#undef HAVE_PWD_H
 #endif
 
 #ifdef HAVE_PWD_H
@@ -1639,6 +1647,7 @@ static int server_main_setup (server * const srv, int argc, char **argv) {
 	SetStdHandle(STD_OUTPUT_HANDLE,(HANDLE)_get_osfhandle(_fileno(stdout)));
 	SetStdHandle(STD_ERROR_HANDLE, (HANDLE)_get_osfhandle(_fileno(stderr)));
 	fdevent_setfd_cloexec(STDERR_FILENO);
+  #elif __hermit__ //skip this entirely
   #else
 	{
 		struct stat st;

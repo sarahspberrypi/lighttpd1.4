@@ -388,8 +388,7 @@ if LIGHTTPD_STATIC
 
 ## static lighttpd server (used in conjunction with -DLIGHTTPD_STATIC)
 ## (order is not important)
-lighttpd_SOURCES = \
-  $(src) \
+lighttpd_SOURCES = $(src) \
   mod_access.c \
   mod_accesslog.c \
   mod_ajp13.c \
