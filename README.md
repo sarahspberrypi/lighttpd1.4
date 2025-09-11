@@ -4,7 +4,7 @@
 Build this port within [the Hermit container](https://github.com/hermit-os/hermit-gcc). 
 This port relies on cmake and can be build with the following command. 
 ```bash
-cmake -S . -B build-hermit/ --toolchain path/to/x86_64-hermit.cmake -DLIGHTTPD_STATIC=ON -DWITH_PCRE2=OFF -DWITH_LIBDEFLATE=OFF -DWITH_ZLIB=OFF -DBUILD_STATIC=ON
+cmake -S . -B build-hermit/ --toolchain path/to/x86_64-hermit.cmake -DWITH_PCRE2=OFF -DWITH_LIBDEFLATE=OFF -DWITH_ZLIB=OFF -DBUILD_STATIC=ON
 
 cmake --build build-hermit/
 ```
@@ -25,19 +25,15 @@ set(CMAKE_C_COMPILER x86_64-hermit-gcc)
 set(CMAKE_CXX_COMPILER x86_64-hermit-g++)
 
 # Needed to pass CMake's compiler test during build system generation
-set(CMAKE_EXE_LINKER_FLAGS_INIT "-L/mnt/ -fpie -pie -static") # /mnt contains libhermit.a
+set(CMAKE_EXE_LINKER_FLAGS_INIT "-L/mnt/ -fpie -pie -static-pie") # /mnt contains libhermit.a
 
 # Disable shared library building for Hermit
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries" FORCE)
 
 # Additional platform-specific flags
 # Hermit requires static linking and specific compiler flags
-set(CMAKE_C_FLAGS_INIT "-static")
-set(CMAKE_CXX_FLAGS_INIT "-static")
-
-
-# better be safe than sorry
-set(BUILD_STATIC TRUE)
+set(CMAKE_C_FLAGS_INIT "-static-pie")
+set(CMAKE_CXX_FLAGS_INIT "-static-pie")
 
 set(CMAKE_CROSSCOMPILING TRUE)
 
